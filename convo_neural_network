@@ -1,0 +1,211 @@
+#include <iostream>
+#include "matrices.hpp"
+#include <cmath>
+#include <string>
+#include <random>
+
+
+
+
+std::random_device rd
+std::mt19937 gen(rd());
+std::uniform_real_distibution dis(-0.5 , 0.5);
+
+
+class Model
+
+
+{
+  int samples , features ;
+  
+  Matrix B , W , Z , Z_prev , A, A_prev , Y;
+  Matrix db , dW , dZ ;
+  int epochs ;
+
+  public :
+  Model () : 
+  ~Model() {}
+  
+  Matrix forward_prop (Matrix X , Matrix W , Matrix b)
+  {
+    Matrix Z = Matrix (10 ,samples );
+
+    Z = W.dot(X) + b ;
+
+
+    return Z ;
+     
+  }
+
+
+  Matrix reLU (Matrix &Z)
+  {
+    int rows = Z.num_rows();
+    int cols = Z.num_cols();
+
+
+    for ( int i = 0 ; i < rows ; i++)
+    {
+
+       for (int j = 0; j < cols ; j++)
+       {
+         if (Z[i][j] <= 0 )
+         { 
+         Z[i][j] = 0;
+         }
+
+
+         else
+         {
+            Z[i][j] = z[i][j];
+         }
+
+       }
+
+    }
+
+  }
+
+
+ Matrix Softmax (Matrix A)
+ {
+   Matrix result = Matrix (10 , samples);
+
+   int rows = result.num_rows();
+   int cols = result.num_rows();
+   double sum = 0.0 ;
+   double exp_val ;
+   
+
+
+
+   for (int i = 0; i < rows ; i++)
+   {
+
+
+
+   for (int j = 0; j < cols ; j++)
+   {
+    exp_val = std::exp(A[i][j]);
+    result.push_back(exp_val);
+    sum += exp_val ;
+
+   }
+
+   }
+
+
+   for (int i = 0 ; i < rows ; i++)
+   {
+
+
+    for (int j = 0; j < cols ; j++)
+    {
+        result[i][j] = result[i][j] / sum ;
+    }
+   }
+
+ }
+
+  Matrix init_params ( Matrix S)
+  {
+
+     for ( int i = 0; i < S.num_rows(); i++)
+     {
+
+
+       for (int j = 0;  j < num_cols(); j++)
+
+       {
+
+        double random_val = dis(gen)
+        S[i][j] = random_val ;
+
+        return S ;
+       }
+
+     }
+
+  }
+
+
+
+ 
+
+  Matrix layer ( Matrix X , int features , int samples ,  std::string activation  , std::string layer = '')
+ {
+    this->samples = samples ;
+    this->features = features ;
+    
+     
+     if (X.num_rows != features && X.num_cols != samples)
+     {
+        std::cerr << "The feature size  , sample size and dimension of matrix passed are not compatible" <<'\n';
+        std::cerr <<"Expecting a matrix of dimension : " << features <<" * " <<samples<<'\n';
+     }
+     X.transpose();
+     W = Matrix( 10 , features );
+     W = init_params(W);
+
+     b = Matrix (10 , 1);
+     b = init_params(b);
+     
+     Z_prev = Z ;
+     Z =  forward_prop(X , W , Z);
+     A_prev = A ;
+     A =  reLU(Z);
+
+
+
+    if (layer == 'output')
+    {
+        Matrix Y = Softmax(A);
+
+    }
+ 
+    
+ }
+
+
+ Matrix compile( int epochs)
+ {
+   for ( int i = 0 ; i < epochs ; i++)
+   {
+
+   Y = one_hot(Y);
+
+        dZ2 = A - Y ;
+        dW2 = (1/samples)*dZ.dot(A_prev.transpose());
+        db2 = (1/samples)* sum(dZ2);
+
+        dZ1 = W.transpose().dot(dZ)*(reLU_deriv(Z_prev));
+        dW1 = (1/samples)*dZ.dot(X.transpose);
+        db1 = (1/samples)*sum(dZ_prev);
+
+        W = W1 - alpha*dW1;
+        b = W1 - alpha*db1;
+        W = W2 - alpha*dW2;
+        b = b2 - alpha*db2;
+   }
+
+
+   double accuracy ()
+   {
+
+
+
+   }
+
+ }
+  
+
+  
+
+
+
+
+
+
+
+
+};
